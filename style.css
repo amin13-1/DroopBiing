@@ -1,0 +1,673 @@
+/* Remove Focus Ring for accessibility reasons */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Custom properties for colors */
+:root {
+    --primary-blue: #366EFF;
+    --text-color-dark: #333;
+    --text-color-light: #666;
+    --border-color: #e0e0e0;
+    --background-light: #f9f9f9;
+    --sidebar-bg: rgba(255, 255, 255, 0.25);
+    --sidebar-text: #333;
+    --sidebar-border: rgba(255, 255, 255, 0.18);
+    --sidebar-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --modal-bg: rgba(255, 255, 255, 0.25);
+    --modal-text: #333;
+    --modal-border: rgba(255, 255, 255, 0.18);
+    --modal-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+    --global-padding: 16px;
+    --font-base: 16px;
+}
+
+/* Dark Mode adaptation */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-blue: #5B8CFF;
+        --text-color-dark: #e0e0e0;
+        --text-color-light: #a0a0a0;
+        --border-color: #444;
+        --background-light: #222;
+        --sidebar-bg: rgba(0, 0, 0, 0.4);
+        --sidebar-text: #e0e0e0;
+        --sidebar-border: rgba(255, 255, 255, 0.05);
+        --sidebar-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        --modal-bg: rgba(0, 0, 0, 0.4);
+        --modal-text: #e0e0e0;
+        --modal-border: rgba(255, 255, 255, 0.05);
+        --modal-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+        background-color: #2b2b2b;
+    }
+
+    .chat-container {
+        background-color: #2b2b2b;
+    }
+
+    .chat-header, .chat-footer {
+        background-color: #2b2b2b;
+    }
+
+    .input-area {
+        background-color: #3b3b3b;
+    }
+
+    .message-input {
+        color: var(--text-color-dark);
+    }
+    .message-input::placeholder {
+        color: var(--text-color-light);
+    }
+
+    .pill-button {
+        background-color: #3b3b3b;
+        color: var(--text-color-dark);
+        border-color: #555;
+    }
+    .pill-button:hover {
+        background-color: #4a4a4a;
+    }
+    .pill-button.droopthink.active {
+        background-color: var(--primary-blue);
+        color: #fff;
+        border-color: var(--primary-blue);
+    }
+
+    .promo-modal .promo-code-input {
+        background-color: #3b3b3b;
+        border-color: #555;
+        color: var(--modal-text);
+    }
+    .promo-modal .promo-code-input::placeholder {
+        color: var(--text-color-light);
+    }
+}
+
+/* Global styles */
+html, body {
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-light);
+    color: var(--text-color-dark);
+    font-size: var(--font-base);
+}
+
+.chat-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Header */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--global-padding);
+    border-bottom: 1px solid var(--border-color);
+    position: relative; /* Keep it relative to the container for flex layout */
+    z-index: 10;
+    background-color: #fff;
+    /* No 'position: fixed' here, as it's part of a flex column for the app window */
+}
+
+.header-left, .header-right {
+    padding: 8px;
+}
+
+.menu-icon, .new-chat-button {
+    font-size: 1.5rem;
+    color: var(--text-color-dark);
+    cursor: pointer;
+}
+
+.new-chat-button {
+    background-color: transparent;
+    border: 1px solid var(--text-color-dark);
+    border-radius: 50%;
+    padding: 0.25rem;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    transition: transform 0.1s ease-in-out, border-color 0.2s;
+}
+.new-chat-button:active {
+    transform: scale(0.95);
+}
+
+.header-center span {
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: var(--text-color-dark);
+}
+
+/* Main Content Area */
+.chat-main {
+    flex-grow: 1; /* Allows it to take up remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--global-padding);
+    overflow-y: auto; /* This is where the chat messages will scroll */
+    position: relative;
+}
+
+/* Initial Greeting State */
+.initial-greeting {
+    text-align: center;
+    padding: 20px;
+}
+
+.droopbiing-logo {
+    width: 5rem;
+    height: auto;
+    margin-bottom: 1.25rem;
+}
+
+.greeting-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.625rem;
+    color: var(--text-color-dark);
+}
+
+.greeting-subtitle {
+    font-size: 1rem;
+    color: var(--text-color-light);
+}
+
+/* Chat Messages Area (when chat starts) */
+.chat-messages {
+    width: 100%;
+    padding: 0.625rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Wrapper for message and actions */
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.625rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.message-wrapper.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+.message-wrapper.user {
+    align-items: flex-end;
+}
+.message-wrapper.bot {
+    align-items: flex-start;
+}
+
+.chat-message {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 20px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+}
+
+.chat-message.user {
+    background-color: var(--primary-blue);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-message.bot {
+    background-color: var(--background-light);
+    color: var(--text-color-dark);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+}
+
+/* Action icons below bot messages */
+.message-actions {
+    display: flex;
+    gap: 0.625rem;
+    margin-top: 0.3125rem;
+    padding-left: 0.625rem;
+    height: 2rem;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+.message-actions.visible {
+    opacity: 1;
+}
+
+.message-wrapper.user .message-actions {
+    justify-content: flex-end;
+    padding-right: 0.625rem;
+    padding-left: 0;
+}
+
+.message-actions button {
+    background: none;
+    border: none;
+    color: var(--text-color-light);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.3125rem;
+    border-radius: 50%;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+}
+
+.message-actions button:hover {
+    color: var(--primary-blue);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.message-actions button:active {
+    transform: scale(0.95);
+}
+
+.message-actions button.liked {
+    color: var(--primary-blue);
+}
+
+.message-actions button.disliked {
+    color: #FF4D4D;
+}
+
+
+/* Footer */
+.chat-footer {
+    padding: 0.75rem var(--global-padding);
+    border-top: 1px solid var(--border-color);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    position: relative; /* Keep it relative to the container for flex layout */
+    z-index: 10;
+    /* No 'position: fixed' here, as it's part of a flex column for the app window */
+}
+
+.input-area {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    border-radius: 1.5625rem;
+    padding: 0.5rem 0.75rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.message-input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--text-color-dark);
+    padding-right: 0.625rem;
+}
+
+.message-input::placeholder {
+    color: var(--text-color-light);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.plus-button, .send-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.375rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s, transform 0.1s;
+}
+
+.send-button {
+    background-color: var(--primary-blue);
+    color: #fff;
+    width: 2.375rem;
+    height: 2.375rem;
+    font-size: 1.125rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+.send-button:active {
+    transform: scale(0.95);
+}
+
+/* Option Buttons (DroopThink, Search) */
+.option-buttons {
+    display: flex;
+    gap: 0.625rem;
+    justify-content: flex-start;
+    padding: 0 0.3125rem;
+    flex-wrap: wrap;
+}
+
+.pill-button {
+    background-color: #f0f0f0;
+    color: var(--text-color-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 1.25rem;
+    padding: 0.5rem 0.9375rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s;
+    white-space: nowrap;
+}
+
+.pill-button:hover {
+    background-color: #e6e6e6;
+}
+.pill-button:active {
+    transform: scale(0.98);
+}
+
+.pill-button.droopthink.active {
+    background-color: var(--primary-blue);
+    color: #fff;
+    border-color: var(--primary-blue);
+}
+
+/* Scrollbar styling (optional, for better visual consistency) */
+.chat-main::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-main::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-main::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.chat-main::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* --- Responsive Design Media Queries --- */
+@media (min-width: 768px) {
+    .chat-container {
+        width: 90%;
+        max-width: 600px;
+        height: 90vh;
+        max-height: 800px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        /* Headers and footers inside this container will appear fixed to its top/bottom */
+    }
+    body {
+        font-size: 17px;
+    }
+    .greeting-title {
+        font-size: 2rem;
+    }
+    .greeting-subtitle {
+        font-size: 1.1rem;
+    }
+    .chat-message {
+        font-size: 1rem;
+    }
+    .message-input {
+        font-size: 1.05rem;
+    }
+    .pill-button {
+        font-size: 0.9rem;
+    }
+}
+@media (min-width: 1200px) {
+    .chat-container {
+        max-width: 700px;
+        max-height: 900px;
+    }
+}
+
+/* --- Sidebar Styles --- */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 99;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: var(--sidebar-shadow);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: left 0.3s ease-in-out;
+    color: var(--sidebar-text);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.close-sidebar-button {
+    background: none;
+    border: none;
+    color: var(--sidebar-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+.close-sidebar-button:hover {
+    color: var(--primary-blue);
+}
+
+.version-list {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.version-item {
+    padding: 12px 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.version-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.version-item.active {
+    background-color: var(--primary-blue);
+    color: #fff;
+}
+
+.version-item .badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.version-item .badge.free {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.version-item .badge.paid {
+    background-color: #FFC107;
+    color: #333;
+}
+
+.sidebar-footer {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-color-light);
+}
+
+/* --- Promotion Code Modal Styles --- */
+.promo-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 101;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.promo-modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.promo-modal {
+    background: var(--modal-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--modal-border);
+    box-shadow: var(--modal-shadow);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    color: var(--modal-text);
+    width: 90%;
+    max-width: 400px;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease-in-out;
+}
+
+.promo-modal-overlay.open .promo-modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.promo-modal .modal-title {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.promo-modal .promo-code-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--modal-text);
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.promo-modal .promo-code-input:focus {
+    border-color: var(--primary-blue);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.promo-modal .confirm-promo-button {
+    background-color: var(--primary-blue);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out, transform 0.1s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.promo-modal .confirm-promo-button:hover {
+    background-color: #2a5de3;
+}
+.promo-modal .confirm-promo-button:active {
+    transform: scale(0.98);
+}

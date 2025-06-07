@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="ar"> <!-- Lang attribute will be overridden by JS based on user's lang -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="appTitle">DroopBiing Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <div class="header-left">
+                <i class="fas fa-align-left menu-icon"></i>
+            </div>
+            <div class="header-center">
+                <span data-i18n="newChatTitle">New chat</span>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-plus-circle new-chat-button"></i>
+            </div>
+        </header>
+
+        <main class="chat-main">
+            <div class="initial-greeting">
+                <img src="https://www.deepseek.com/assets/img/deepseek-logo-blue.svg" alt="DroopBiing Logo" class="droopbiing-logo">
+                <h1 class="greeting-title" data-i18n="greetingHi">Hi, I'm DroopBiing.</h1>
+                <p class="greeting-subtitle" data-i18n="greetingHelp">How can I help you today?</p>
+            </div>
+            <div class="chat-messages" style="display: none;">
+                <!-- Chat messages will be appended here -->
+            </div>
+        </main>
+
+        <footer class="chat-footer">
+            <div class="input-area">
+                <input type="text" id="message-input" class="message-input" data-i18n-placeholder="messagePlaceholder" placeholder="Message DroopBiing">
+                <div class="action-buttons">
+                    <button class="plus-button"><i class="fas fa-plus"></i></button>
+                    <button class="send-button"><i class="fas fa-arrow-up"></i></button>
+                </div>
+            </div>
+            <div class="option-buttons">
+                <button id="droopthink-button" class="pill-button droopthink">
+                    <i class="fas fa-brain"></i> <span data-i18n="droopThinkName">DroopThink (V1)</span>
+                </button>
+                <button class="pill-button search">
+                    <i class="fas fa-globe"></i> <span data-i18n="searchButton">Search</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3 data-i18n="sidebarTitle">DroopBiing Versions</h3>
+            <button class="close-sidebar-button"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="version-list">
+            <li class="version-item active" data-version="V1">DroopBiing V1 <span class="badge free" data-i18n="freeBadge">(مجانية)</span></li>
+            <li class="version-item" data-version="V1.3">DroopBiing V1.3 <span class="badge paid" data-i18n="paidBadge">(مدفوعة)</span></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p data-i18n="copyrightText">© 2023 DroopBiing. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- Promotion Code Modal -->
+    <div class="promo-modal-overlay">
+        <div class="promo-modal">
+            <h3 class="modal-title"></h3>
+            <input type="text" class="promo-code-input" data-i18n-placeholder="promoCodePlaceholder" placeholder="ادخل الرمز هنا...">
+            <button class="confirm-promo-button" data-i18n="confirmButton">تأكيد</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
